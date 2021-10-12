@@ -1,4 +1,4 @@
-# grow-grew-grown-webapp
+# grow-grew-grown
 
 ## Project setup
 ```
