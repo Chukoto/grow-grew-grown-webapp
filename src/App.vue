@@ -1,9 +1,11 @@
 <template>
   <v-app>
     <NaviDrawer />
-    <v-main>
-      <router-view />
-    </v-main>
+    <v-container class="wrapper" fluid>
+      <v-main>
+        <router-view />
+      </v-main>
+    </v-container>
   </v-app>
 </template>
 
@@ -20,3 +22,9 @@ export default {
   }),
 };
 </script>
+
+<style scoped>
+.wrapper {
+  margin-left: 256px;
+}
+</style>
