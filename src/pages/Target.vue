@@ -192,7 +192,11 @@
             </v-card>
             <v-row>
               <v-col cols="6" sm="6">
-                <v-btn color="primary" @click="nextStepController()">
+                <v-btn
+                  color="primary"
+                  @click="nextStepController()"
+                  :disabled="!dates[0]"
+                >
                   {{ step.nextBtnLabel }}
                 </v-btn>
               </v-col>
