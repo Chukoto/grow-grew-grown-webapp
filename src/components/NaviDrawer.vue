@@ -52,15 +52,15 @@ export default {
       picture: 'https://randomuser.me/api/portraits/men/3.jpg',
       items: [
         {
-          title: 'My Files',
-          icon: 'mdi-folder',
+          title: '目標',
+          icon: 'mdi-target',
         },
         {
-          title: 'Shared with me',
-          icon: 'mdi-account-multiple',
+          title: '進捗度',
+          icon: 'mdi-chart-bar',
         },
         {
-          title: 'Starred',
+          title: 'お気に入り',
           icon: 'mdi-star',
         },
       ],
@@ -85,6 +85,6 @@ export default {
 
 <style scoped>
 .item-list {
-  height: 100vh;
+  height: 77vh;
 }
 </style>
