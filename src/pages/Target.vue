@@ -49,6 +49,10 @@
                     label="ジャンル"
                     v-model="genre"
                     dense
+                    :error-messages="genreErrors"
+                    required
+                    @input="$v.genre.$touch()"
+                    @blur="$v.genre.$touch()"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -59,6 +63,10 @@
                 label="詳細を記入"
                 placeholder="例）腕立て伏せを行う"
                 v-model="text"
+                :error-messages="textErrors"
+                required
+                @input="$v.text.$touch()"
+                @blur="$v.text.$touch()"
               ></v-textarea>
               <!-- textarea end -->
               <!-- select and text-field start -->
@@ -68,6 +76,11 @@
                     v-model="number1"
                     label="数値"
                     clearable
+                    :error-messages="number1Errors"
+                    required
+                    numeric
+                    @input="$v.number1.$touch()"
+                    @blur="$v.number1.$touch()"
                   ></v-text-field>
                 </v-col>
                 <v-col class="d-flex" cols="6" sm="4">
@@ -75,6 +88,10 @@
                     :items="units"
                     label="単位"
                     v-model="unit1"
+                    :error-messages="unit1Errors"
+                    required
+                    @input="$v.unit1.$touch()"
+                    @blur="$v.unit1.$touch()"
                   ></v-select>
                 </v-col>
                 <v-col class="d-flex" cols="6" sm="4">
@@ -82,6 +99,10 @@
                     :items="conditions1"
                     label="条件"
                     v-model="condition1"
+                    :error-messages="condition1Errors"
+                    required
+                    @input="$v.condition1.$touch()"
+                    @blur="$v.condition1.$touch()"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -116,7 +137,11 @@
             </v-card>
             <v-row>
               <v-col cols="6" sm="6">
-                <v-btn color="primary" @click="nextStepController()">
+                <v-btn
+                  color="primary"
+                  @click="nextStepController()"
+                  :disabled="$v.$invalid"
+                >
                   {{ step.nextBtnLabel }}
                 </v-btn>
               </v-col>
@@ -167,7 +192,11 @@
             </v-card>
             <v-row>
               <v-col cols="6" sm="6">
-                <v-btn color="primary" @click="nextStepController()">
+                <v-btn
+                  color="primary"
+                  @click="nextStepController()"
+                  :disabled="!dates[0]"
+                >
                   {{ step.nextBtnLabel }}
                 </v-btn>
               </v-col>
@@ -247,7 +276,21 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate';
+import { required, numeric } from 'vuelidate/lib/validators';
+
 export default {
+  name: 'Target',
+  mixins: [validationMixin],
+
+  validations: {
+    genre: { required },
+    text: { required },
+    number1: { required, numeric },
+    unit1: { required },
+    condition1: { required },
+  },
+
   data() {
     return {
       dialog: false,
@@ -299,6 +342,44 @@ export default {
       dates: [],
       menu: false,
     };
+  },
+
+  computed: {
+    genreErrors() {
+      const errors = [];
+      if (!this.$v.genre.$dirty) return errors;
+      !this.$v.genre.required &&
+        errors.push('ジャンルの選択は必須です');
+      return errors;
+    },
+    textErrors() {
+      const errors = [];
+      if (!this.$v.text.$dirty) return errors;
+      !this.$v.text.required && errors.push('詳細の記入は必須です');
+      return errors;
+    },
+    number1Errors() {
+      const errors = [];
+      if (!this.$v.number1.$dirty) return errors;
+      !this.$v.number1.required &&
+        errors.push('数値の入力は必須です');
+      !this.$v.number1.numeric &&
+        errors.push('半角英数字で入力してください');
+      return errors;
+    },
+    unit1Errors() {
+      const errors = [];
+      if (!this.$v.unit1.$dirty) return errors;
+      !this.$v.unit1.required && errors.push('単位の入力は必須です');
+      return errors;
+    },
+    condition1Errors() {
+      const errors = [];
+      if (!this.$v.condition1.$dirty) return errors;
+      !this.$v.condition1.required &&
+        errors.push('条件の入力は必須です');
+      return errors;
+    },
   },
   methods: {
     prevStepController: function() {
