@@ -31,11 +31,18 @@
       <v-divider></v-divider>
 
       <v-list class="item-list" nav dense>
-        <v-list-item link v-for="(item, index) in items" :key="index">
+        <v-list-item
+          link
+          v-for="(item, index) in items"
+          :key="index"
+          :to="item.link"
+        >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+          <v-list-item-title>
+            {{ item.title }}
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -54,6 +61,7 @@ export default {
         {
           title: '目標',
           icon: 'mdi-target',
+          link: { name: 'Target' },
         },
         {
           title: '進捗度',
