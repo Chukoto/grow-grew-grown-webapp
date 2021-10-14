@@ -236,15 +236,17 @@
           <v-stepper-content v-if="step.id === 3" :step="step.id">
             <v-card class="mb-12" height="auto">
               <div>
-                ジャンル：<br />
-                {{ genre }} <br /><br />
+                ジャンル：{{ genre }}
+                <v-divider class="my-4"></v-divider>
                 詳細：<br />
                 {{ text }} <br /><br />
+                <v-divider class="my-4"></v-divider>
                 <span class="font-weight-bold, text-h5">
                   {{ finalText.join('') }}
                 </span>
                 <br />
                 <br />
+                <v-divider class="my-4"></v-divider>
 
                 実行日：<br />
                 <span v-for="(date, index) in dates" :key="index">
