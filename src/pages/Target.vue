@@ -21,6 +21,7 @@
       <span>追加</span>
     </v-tooltip>
 
+    <!-- 追加ボタン押下時ダイアログ start -->
     <v-row justify="center">
       <!-- dialog start -->
       <v-dialog v-model="dialog" width="600px">
@@ -262,7 +263,7 @@
             </v-card>
             <v-row>
               <v-col cols="6" sm="6">
-                <v-btn color="primary" @click="nextStepController()">
+                <v-btn color="primary" @click="addTarget()">
                   {{ step.nextBtnLabel }}
                 </v-btn>
               </v-col>
@@ -288,6 +289,7 @@
       </v-dialog>
       <!-- dialog end -->
     </v-row>
+    <!-- 追加ボタン押下時ダイアログ end -->
   </div>
 </template>
 
@@ -298,6 +300,7 @@ import {
   numeric,
   requiredIf,
 } from 'vuelidate/lib/validators';
+const STORAGE_KEY = 'targets';
 
 export default {
   name: 'Target',
@@ -329,6 +332,8 @@ export default {
 
   data() {
     return {
+      targets: [],
+
       dialog: false,
       stepNum: 1,
       genre: '',
@@ -388,6 +393,12 @@ export default {
 
       finalText: [],
     };
+  },
+
+  mounted() {
+    if (localStorage.getItem(STORAGE_KEY)) {
+      this.targets = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    }
   },
 
   computed: {
@@ -507,6 +518,26 @@ export default {
         this.number2 = '';
         this.unit2 = '';
       }
+    },
+    addTarget() {
+      this.targets.push({
+        id: this.targets.length,
+        genre: this.genre,
+        text: this.text,
+        number1: this.number1,
+        number2: this.number2,
+        unit1: this.unit1,
+        unit2: this.unit2,
+        condition1: this.condition1,
+        condition2: this.condition2,
+        dates: this.dates,
+      });
+      this.saveTargets();
+      this.resetData();
+    },
+    saveTargets() {
+      const parsed = JSON.stringify(this.targets);
+      localStorage.setItem(STORAGE_KEY, parsed);
     },
   },
 };
