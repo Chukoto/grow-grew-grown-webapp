@@ -116,6 +116,11 @@
                     v-model="number2"
                     label="数値"
                     clearable
+                    :error-messages="number2Errors"
+                    required
+                    numeric
+                    @input="$v.number2.$touch()"
+                    @blur="$v.number2.$touch()"
                   ></v-text-field>
                 </v-col>
                 <v-col class="d-flex" cols="6" sm="4">
@@ -123,6 +128,10 @@
                     :items="units"
                     label="単位"
                     v-model="unit2"
+                    :error-messages="unit2Errors"
+                    required
+                    @input="$v.unit2.$touch()"
+                    @blur="$v.unit2.$touch()"
                   ></v-select>
                 </v-col>
                 <v-col class="d-flex" cols="6" sm="4">
@@ -130,6 +139,10 @@
                     :items="conditions2"
                     label="条件"
                     v-model="condition2"
+                    :error-messages="condition2Errors"
+                    required
+                    @input="$v.condition2.$touch()"
+                    @blur="$v.condition2.$touch()"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -139,7 +152,9 @@
               <v-col cols="6" sm="6">
                 <v-btn
                   color="primary"
-                  @click="nextStepController()"
+                  @click="
+                    nextStepController(number2, unit2, condition2)
+                  "
                   :disabled="$v.$invalid"
                 >
                   {{ step.nextBtnLabel }}
@@ -220,20 +235,13 @@
           <!-- ステップ３ start -->
           <v-stepper-content v-if="step.id === 3" :step="step.id">
             <v-card class="mb-12" height="auto">
-              <p>
+              <div>
                 ジャンル：<br />
                 {{ genre }} <br /><br />
                 詳細：<br />
                 {{ text }} <br /><br />
-                <span class="font-weight-bold, text-h4">
-                  {{
-                    number1 +
-                      unit1 +
-                      condition1 +
-                      number2 +
-                      unit2 +
-                      condition2
-                  }}
+                <span class="font-weight-bold, text-h5">
+                  {{ finalText.join('') }}
                 </span>
                 <br />
                 <br />
@@ -242,7 +250,13 @@
                 <span v-for="(date, index) in dates" :key="index">
                   {{ date.slice(5).replace('-', '/') }}<br />
                 </span>
-              </p>
+                <br />
+                <div class="text-right">
+                  <span class="mx-2 text-h6">
+                    合計： {{ dates.length }} 日分
+                  </span>
+                </div>
+              </div>
             </v-card>
             <v-row>
               <v-col cols="6" sm="6">
@@ -277,7 +291,11 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required, numeric } from 'vuelidate/lib/validators';
+import {
+  required,
+  numeric,
+  requiredIf,
+} from 'vuelidate/lib/validators';
 
 export default {
   name: 'Target',
@@ -287,8 +305,24 @@ export default {
     genre: { required },
     text: { required },
     number1: { required, numeric },
+    number2: {
+      required: requiredIf((vc) => {
+        return vc.condition1 === 'から';
+      }),
+      numeric,
+    },
     unit1: { required },
+    unit2: {
+      required: requiredIf((vc) => {
+        return vc.condition1 === 'から';
+      }),
+    },
     condition1: { required },
+    condition2: {
+      required: requiredIf((vc) => {
+        return vc.condition1 === 'から';
+      }),
+    },
   },
 
   data() {
@@ -322,8 +356,9 @@ export default {
           nextBtnLabel: '完了',
         },
       ],
-      genres: ['学習', 'トレーニング', 'Todo'],
+      genres: ['学習', '読書', 'トレーニング', 'Todo'],
       units: [
+        '',
         '回',
         '個',
         '枚',
@@ -336,11 +371,20 @@ export default {
         '分',
         '秒',
       ],
-      conditions1: ['行う', '間行う', 'ずつ行う', 'から'],
-      conditions2: ['まで行う', 'の間行う'],
+      conditions1: [
+        '',
+        '行う',
+        'まで行う',
+        'ずつ行う',
+        '間行う',
+        'から',
+      ],
+      conditions2: ['', 'まで行う', 'の間行う'],
 
       dates: [],
       menu: false,
+
+      finalText: [],
     };
   },
 
@@ -367,10 +411,25 @@ export default {
         errors.push('半角英数字で入力してください');
       return errors;
     },
+    number2Errors() {
+      const errors = [];
+      if (!this.$v.number2.$dirty) return errors;
+      !this.$v.number2.required &&
+        errors.push('数値の入力は必須です');
+      !this.$v.number2.numeric &&
+        errors.push('半角英数字で入力してください');
+      return errors;
+    },
     unit1Errors() {
       const errors = [];
       if (!this.$v.unit1.$dirty) return errors;
       !this.$v.unit1.required && errors.push('単位の入力は必須です');
+      return errors;
+    },
+    unit2Errors() {
+      const errors = [];
+      if (!this.$v.unit2.$dirty) return errors;
+      !this.$v.unit2.required && errors.push('単位の入力は必須です');
       return errors;
     },
     condition1Errors() {
@@ -380,20 +439,40 @@ export default {
         errors.push('条件の入力は必須です');
       return errors;
     },
+    condition2Errors() {
+      const errors = [];
+      if (!this.$v.condition2.$dirty) return errors;
+      !this.$v.condition2.required &&
+        errors.push('条件の入力は必須です');
+      return errors;
+    },
   },
   methods: {
     prevStepController: function() {
       this.stepNum -= 1;
+      if (this.stepNum < 3) {
+        this.finalText = [];
+      }
     },
-    nextStepController: function() {
+    nextStepController: function(num2, unit2, cond2) {
       if (this.stepNum < this.steps.length) {
         this.stepNum += 1;
+        this.removeUncompleted(num2, unit2, cond2);
       } else {
         this.resetData();
       }
 
       if (this.dates[0]) {
         this.dates = this.dates.sort(this.compareDate);
+      }
+
+      if (this.stepNum === 3) {
+        this.finalText.push(this.number1);
+        this.finalText.push(this.unit1);
+        this.finalText.push(this.condition1);
+        this.finalText.push(this.number2);
+        this.finalText.push(this.unit2);
+        this.finalText.push(this.condition2);
       }
     },
     compareDate: function(a, b) {
@@ -409,8 +488,23 @@ export default {
       this.condition1 = '';
       this.condition2 = '';
       this.dates = [];
+      this.finalText = [];
       this.stepNum = 1;
       this.dialog = false;
+    },
+    removeUncompleted: function(num, unit, cond) {
+      if (num === null) {
+        this.unit2 = '';
+        this.condition2 = '';
+      }
+      if (unit === '') {
+        this.number2 = '';
+        this.condition2 = '';
+      }
+      if (cond === '') {
+        this.number2 = '';
+        this.unit2 = '';
+      }
     },
   },
 };
