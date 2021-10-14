@@ -116,6 +116,11 @@
                     v-model="number2"
                     label="数値"
                     clearable
+                    :error-messages="number2Errors"
+                    required
+                    numeric
+                    @input="$v.number2.$touch()"
+                    @blur="$v.number2.$touch()"
                   ></v-text-field>
                 </v-col>
                 <v-col class="d-flex" cols="6" sm="4">
@@ -123,6 +128,10 @@
                     :items="units"
                     label="単位"
                     v-model="unit2"
+                    :error-messages="unit2Errors"
+                    required
+                    @input="$v.unit2.$touch()"
+                    @blur="$v.unit2.$touch()"
                   ></v-select>
                 </v-col>
                 <v-col class="d-flex" cols="6" sm="4">
@@ -130,6 +139,10 @@
                     :items="conditions2"
                     label="条件"
                     v-model="condition2"
+                    :error-messages="condition2Errors"
+                    required
+                    @input="$v.condition2.$touch()"
+                    @blur="$v.condition2.$touch()"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -279,7 +292,11 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required, numeric } from 'vuelidate/lib/validators';
+import {
+  required,
+  numeric,
+  requiredIf,
+} from 'vuelidate/lib/validators';
 
 export default {
   name: 'Target',
@@ -289,8 +306,24 @@ export default {
     genre: { required },
     text: { required },
     number1: { required, numeric },
+    number2: {
+      required: requiredIf((vc) => {
+        return vc.condition1 === 'から';
+      }),
+      numeric,
+    },
     unit1: { required },
+    unit2: {
+      required: requiredIf((vc) => {
+        return vc.condition1 === 'から';
+      }),
+    },
     condition1: { required },
+    condition2: {
+      required: requiredIf((vc) => {
+        return vc.condition1 === 'から';
+      }),
+    },
   },
 
   data() {
@@ -370,16 +403,38 @@ export default {
         errors.push('半角英数字で入力してください');
       return errors;
     },
+    number2Errors() {
+      const errors = [];
+      if (!this.$v.number2.$dirty) return errors;
+      !this.$v.number2.required &&
+        errors.push('数値の入力は必須です');
+      !this.$v.number2.numeric &&
+        errors.push('半角英数字で入力してください');
+      return errors;
+    },
     unit1Errors() {
       const errors = [];
       if (!this.$v.unit1.$dirty) return errors;
       !this.$v.unit1.required && errors.push('単位の入力は必須です');
       return errors;
     },
+    unit2Errors() {
+      const errors = [];
+      if (!this.$v.unit2.$dirty) return errors;
+      !this.$v.unit2.required && errors.push('単位の入力は必須です');
+      return errors;
+    },
     condition1Errors() {
       const errors = [];
       if (!this.$v.condition1.$dirty) return errors;
       !this.$v.condition1.required &&
+        errors.push('条件の入力は必須です');
+      return errors;
+    },
+    condition2Errors() {
+      const errors = [];
+      if (!this.$v.condition2.$dirty) return errors;
+      !this.$v.condition2.required &&
         errors.push('条件の入力は必須です');
       return errors;
     },
