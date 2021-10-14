@@ -139,7 +139,9 @@
               <v-col cols="6" sm="6">
                 <v-btn
                   color="primary"
-                  @click="nextStepController()"
+                  @click="
+                    nextStepController(number2, unit2, condition2)
+                  "
                   :disabled="$v.$invalid"
                 >
                   {{ step.nextBtnLabel }}
@@ -324,6 +326,7 @@ export default {
       ],
       genres: ['学習', 'トレーニング', 'Todo'],
       units: [
+        '',
         '回',
         '個',
         '枚',
@@ -336,8 +339,8 @@ export default {
         '分',
         '秒',
       ],
-      conditions1: ['行う', '間行う', 'ずつ行う', 'から'],
-      conditions2: ['まで行う', 'の間行う'],
+      conditions1: ['', '行う', '間行う', 'ずつ行う', 'から'],
+      conditions2: ['', 'まで行う', 'の間行う'],
 
       dates: [],
       menu: false,
@@ -385,9 +388,10 @@ export default {
     prevStepController: function() {
       this.stepNum -= 1;
     },
-    nextStepController: function() {
+    nextStepController: function(num2, unit2, cond2) {
       if (this.stepNum < this.steps.length) {
         this.stepNum += 1;
+        this.removeUncompleted(num2, unit2, cond2);
       } else {
         this.resetData();
       }
@@ -411,6 +415,20 @@ export default {
       this.dates = [];
       this.stepNum = 1;
       this.dialog = false;
+    },
+    removeUncompleted: function(num, unit, cond) {
+      if (num === null) {
+        this.unit2 = '';
+        this.condition2 = '';
+      }
+      if (unit === '') {
+        this.number2 = null;
+        this.condition2 = '';
+      }
+      if (cond === '') {
+        this.number2 = null;
+        this.unit2 = '';
+      }
     },
   },
 };
