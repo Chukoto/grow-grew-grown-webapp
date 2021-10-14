@@ -235,20 +235,13 @@
           <!-- ステップ３ start -->
           <v-stepper-content v-if="step.id === 3" :step="step.id">
             <v-card class="mb-12" height="auto">
-              <p>
+              <div>
                 ジャンル：<br />
                 {{ genre }} <br /><br />
                 詳細：<br />
                 {{ text }} <br /><br />
-                <span class="font-weight-bold, text-h4">
-                  {{
-                    number1 +
-                      unit1 +
-                      condition1 +
-                      number2 +
-                      unit2 +
-                      condition2
-                  }}
+                <span class="font-weight-bold, text-h5">
+                  {{ finalText.join('') }}
                 </span>
                 <br />
                 <br />
@@ -257,7 +250,13 @@
                 <span v-for="(date, index) in dates" :key="index">
                   {{ date.slice(5).replace('-', '/') }}<br />
                 </span>
-              </p>
+                <br />
+                <div class="text-right">
+                  <span class="mx-2 text-h6">
+                    合計： {{ dates.length }} 日分
+                  </span>
+                </div>
+              </div>
             </v-card>
             <v-row>
               <v-col cols="6" sm="6">
@@ -357,7 +356,7 @@ export default {
           nextBtnLabel: '完了',
         },
       ],
-      genres: ['学習', 'トレーニング', 'Todo'],
+      genres: ['学習', '読書', 'トレーニング', 'Todo'],
       units: [
         '',
         '回',
@@ -372,11 +371,20 @@ export default {
         '分',
         '秒',
       ],
-      conditions1: ['', '行う', '間行う', 'ずつ行う', 'から'],
+      conditions1: [
+        '',
+        '行う',
+        'まで行う',
+        'ずつ行う',
+        '間行う',
+        'から',
+      ],
       conditions2: ['', 'まで行う', 'の間行う'],
 
       dates: [],
       menu: false,
+
+      finalText: [],
     };
   },
 
@@ -442,6 +450,9 @@ export default {
   methods: {
     prevStepController: function() {
       this.stepNum -= 1;
+      if (this.stepNum < 3) {
+        this.finalText = [];
+      }
     },
     nextStepController: function(num2, unit2, cond2) {
       if (this.stepNum < this.steps.length) {
@@ -453,6 +464,15 @@ export default {
 
       if (this.dates[0]) {
         this.dates = this.dates.sort(this.compareDate);
+      }
+
+      if (this.stepNum === 3) {
+        this.finalText.push(this.number1);
+        this.finalText.push(this.unit1);
+        this.finalText.push(this.condition1);
+        this.finalText.push(this.number2);
+        this.finalText.push(this.unit2);
+        this.finalText.push(this.condition2);
       }
     },
     compareDate: function(a, b) {
@@ -468,6 +488,7 @@ export default {
       this.condition1 = '';
       this.condition2 = '';
       this.dates = [];
+      this.finalText = [];
       this.stepNum = 1;
       this.dialog = false;
     },
@@ -477,11 +498,11 @@ export default {
         this.condition2 = '';
       }
       if (unit === '') {
-        this.number2 = null;
+        this.number2 = '';
         this.condition2 = '';
       }
       if (cond === '') {
-        this.number2 = null;
+        this.number2 = '';
         this.unit2 = '';
       }
     },
