@@ -46,7 +46,7 @@
               <v-row class="mt-1" align="center">
                 <v-col class="d-flex" cols="12" sm="6">
                   <v-select
-                    :items="genres"
+                    :items="genresFromParent"
                     label="ジャンル"
                     v-model="genre"
                     dense
@@ -304,6 +304,11 @@ const STORAGE_KEY = 'targets';
 
 export default {
   name: 'addTarget',
+  props: {
+    genresFromParent: {
+      genres: Object,
+    },
+  },
   mixins: [validationMixin],
 
   validations: {
@@ -363,7 +368,6 @@ export default {
           nextBtnLabel: '完了',
         },
       ],
-      genres: ['学習', '読書', 'トレーニング', 'Todo'],
       units: [
         '',
         '回',
