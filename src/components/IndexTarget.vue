@@ -87,21 +87,21 @@ export default {
       ) {
         e.target.classList.remove('grey');
         e.target.classList.add('green');
-        this.targets[parentIndex].statusArr[childIndex] = true;
-        console.log(this.targets[parentIndex].statusArr[childIndex]);
-        const parsed = JSON.stringify(this.targets);
-        localStorage.setItem(STORAGE_KEY, parsed);
+        this.flagChecker(childIndex, parentIndex, true);
       } else if (
         e.target.classList.contains('v-timeline-item__inner-dot') &&
         e.target.classList.contains('green')
       ) {
         e.target.classList.remove('green');
         e.target.classList.add('grey');
-        this.targets[parentIndex].statusArr[childIndex] = false;
-        console.log(this.targets[parentIndex].statusArr[childIndex]);
-        const parsed = JSON.stringify(this.targets);
-        localStorage.setItem(STORAGE_KEY, parsed);
+        this.flagChecker(childIndex, parentIndex, false);
       }
+    },
+
+    flagChecker(childIndex, parentIndex, flag) {
+      this.targets[parentIndex].statusArr[childIndex] = flag;
+      const parsed = JSON.stringify(this.targets);
+      localStorage.setItem(STORAGE_KEY, parsed);
     },
   },
 };
