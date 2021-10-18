@@ -1,7 +1,10 @@
 <template>
   <div>
-    <AddTarget style="margin-bottom: 30px" />
-    <IndexTarget />
+    <AddTarget
+      :genresFromParent="this.genres"
+      style="margin-bottom: 30px"
+    />
+    <IndexTarget :genresFromParent="this.genres" />
   </div>
 </template>
 
@@ -13,6 +16,11 @@ export default {
   components: {
     AddTarget,
     IndexTarget,
+  },
+  data() {
+    return {
+      genres: ['学習', '読書', 'トレーニング', 'Todo'],
+    };
   },
 };
 </script>
