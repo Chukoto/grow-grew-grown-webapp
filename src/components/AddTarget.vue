@@ -283,7 +283,6 @@
               </v-col>
             </v-row>
           </v-stepper-content>
-          {{ statusArr }}
           <!-- ステップ３ end -->
         </v-stepper>
         <!-- stepper end -->
