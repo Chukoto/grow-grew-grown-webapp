@@ -8,7 +8,10 @@
         md="6"
         class="d-flex justify-center"
       >
-        <v-card width="300">
+        <v-card
+          width="300"
+          v-if="target.genre === selectedValFromParent"
+        >
           <v-img
             height="200px"
             src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
@@ -65,6 +68,12 @@
 const STORAGE_KEY = 'targets';
 
 export default {
+  name: 'IndexTarget',
+  props: {
+    selectedValFromParent: {
+      selected: String,
+    },
+  },
   data() {
     return {
       targets: [],
