@@ -2,16 +2,14 @@
   <div style="margin-right: 256px;">
     <v-row>
       <v-col
-        v-for="(target, targetIndex) in targets"
+        v-for="(target, targetIndex) in targetsTest"
         :key="targetIndex"
         cols="12"
         md="6"
         class="d-flex justify-center"
       >
-        <v-card
-          width="300"
-          v-if="target.genre === selectedValFromParent"
-        >
+        <!-- genre別に表示 -->
+        <v-card width="300">
           <v-img
             height="200px"
             src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
@@ -87,6 +85,14 @@ export default {
         localStorage.removeItem(STORAGE_KEY);
       }
     }
+  },
+  computed: {
+    targetsTest: function() {
+      const selectedVal = this.selectedValFromParent;
+      return this.targets.filter(function(t) {
+        return t.genre === selectedVal;
+      });
+    },
   },
   methods: {
     changeStatus(e, childIndex, parentIndex) {
