@@ -243,7 +243,7 @@
                 {{ text }} <br /><br />
                 <v-divider class="my-4"></v-divider>
                 <span class="font-weight-bold, text-h5">
-                  {{ finalText.join('') }}
+                  {{ finalText }}
                 </span>
                 <br />
                 <br />
@@ -283,6 +283,7 @@
               </v-col>
             </v-row>
           </v-stepper-content>
+          {{ statusArr }}
           <!-- ステップ３ end -->
         </v-stepper>
         <!-- stepper end -->
@@ -391,7 +392,10 @@ export default {
       dates: [],
       menu: false,
 
-      finalText: [],
+      finalTextArr: [],
+      finalText: '',
+
+      statusArr: [],
     };
   },
 
@@ -464,7 +468,8 @@ export default {
     prevStepController: function() {
       this.stepNum -= 1;
       if (this.stepNum < 3) {
-        this.finalText = [];
+        this.finalTextArr = [];
+        this.statusArr = [];
       }
     },
     nextStepController: function(num2, unit2, cond2) {
@@ -477,15 +482,19 @@ export default {
 
       if (this.dates[0]) {
         this.dates = this.dates.sort(this.compareDate);
+        for (let i = 0; i < this.dates.length; i++) {
+          this.statusArr.push(false);
+        }
       }
 
       if (this.stepNum === 3) {
-        this.finalText.push(this.number1);
-        this.finalText.push(this.unit1);
-        this.finalText.push(this.condition1);
-        this.finalText.push(this.number2);
-        this.finalText.push(this.unit2);
-        this.finalText.push(this.condition2);
+        this.finalTextArr.push(this.number1);
+        this.finalTextArr.push(this.unit1);
+        this.finalTextArr.push(this.condition1);
+        this.finalTextArr.push(this.number2);
+        this.finalTextArr.push(this.unit2);
+        this.finalTextArr.push(this.condition2);
+        this.finalText = this.finalTextArr.join('');
       }
     },
     compareDate: function(a, b) {
@@ -501,7 +510,9 @@ export default {
       this.condition1 = '';
       this.condition2 = '';
       this.dates = [];
-      this.finalText = [];
+      this.finalTextArr = [];
+      this.finalText = '';
+      this.statusArr = [];
       this.stepNum = 1;
       this.dialog = false;
     },
@@ -531,6 +542,8 @@ export default {
         condition1: this.condition1,
         condition2: this.condition2,
         dates: this.dates,
+        finalText: this.finalText,
+        statusArr: this.statusArr,
       });
       this.saveTargets();
       this.resetData();
