@@ -3,7 +3,7 @@
     <h1>
       目標
     </h1>
-    <v-tooltip bottom>
+    <v-tooltip right>
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           class="mx-2"
