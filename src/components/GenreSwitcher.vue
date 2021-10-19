@@ -24,9 +24,12 @@ export default {
       genres: Object,
     },
   },
+  mounted() {
+    this.sendSelectedVal();
+  },
   data() {
     return {
-      selected: '',
+      selected: 'すべて',
     };
   },
   methods: {
