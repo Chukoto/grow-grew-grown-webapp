@@ -510,6 +510,7 @@ export default {
       return a < b ? -1 : 1;
     },
     resetData: function() {
+      this.targets = [];
       this.genre = '';
       this.text = '';
       this.number1 = '';
@@ -556,6 +557,9 @@ export default {
       });
       this.saveTargets();
       this.resetData();
+      setTimeout(() => {
+        this.$router.go();
+      }, 150);
     },
     saveTargets() {
       const parsed = JSON.stringify(this.targets);
