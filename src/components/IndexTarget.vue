@@ -2,8 +2,8 @@
   <div style="margin-right: 256px;">
     <v-row>
       <v-col
-        v-for="(target, targetIndex) in targetsTest"
-        :key="targetIndex"
+        v-for="target in targetsTest"
+        :key="target.id"
         cols="12"
         md="6"
         class="d-flex justify-center"
@@ -44,7 +44,7 @@
                 :key="index"
                 :color="target.statusArr[index] ? 'green' : 'grey'"
                 @click.native.stop="
-                  changeStatus($event, index, targetIndex)
+                  changeStatus($event, target.id, index)
                 "
                 style="cursor: pointer;"
               >
@@ -59,6 +59,7 @@
         </v-card>
       </v-col>
     </v-row>
+    <pre>{{ $data }}</pre>
   </div>
 </template>
 
@@ -95,26 +96,26 @@ export default {
     },
   },
   methods: {
-    changeStatus(e, childIndex, parentIndex) {
+    changeStatus(e, targetId, dateIndex) {
       if (
         e.target.classList.contains('v-timeline-item__inner-dot') &&
         e.target.classList.contains('grey')
       ) {
         e.target.classList.remove('grey');
         e.target.classList.add('green');
-        this.flagChecker(childIndex, parentIndex, true);
+        this.flagChecker(targetId, dateIndex, true);
       } else if (
         e.target.classList.contains('v-timeline-item__inner-dot') &&
         e.target.classList.contains('green')
       ) {
         e.target.classList.remove('green');
         e.target.classList.add('grey');
-        this.flagChecker(childIndex, parentIndex, false);
+        this.flagChecker(targetId, dateIndex, false);
       }
     },
-
-    flagChecker(childIndex, parentIndex, flag) {
-      this.targets[parentIndex].statusArr[childIndex] = flag;
+    flagChecker(targetId, dateIndex, flag) {
+      let something = this.targets[targetId];
+      something.statusArr[dateIndex] = flag;
       const parsed = JSON.stringify(this.targets);
       localStorage.setItem(STORAGE_KEY, parsed);
     },
