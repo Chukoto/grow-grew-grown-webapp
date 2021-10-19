@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h1>
+      目標
+    </h1>
     <AddTarget
       :genresFromParent="this.genres"
       style="margin-bottom: 30px"
@@ -11,6 +14,7 @@
     <IndexTarget
       :genresFromParent="this.genres"
       :selectedValFromParent="this.selected"
+      style="margin-right: 256px;"
     />
   </div>
 </template>
