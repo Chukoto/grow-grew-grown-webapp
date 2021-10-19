@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h1>
-      目標
-    </h1>
     <v-tooltip right>
       <template v-slot:activator="{ on, attrs }">
         <v-btn
