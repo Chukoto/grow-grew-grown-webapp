@@ -59,7 +59,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <pre>{{ $data }}</pre>
   </div>
 </template>
 
@@ -71,6 +70,9 @@ export default {
   props: {
     selectedValFromParent: {
       selected: String,
+    },
+    genresFromParent: {
+      genres: Object,
     },
   },
   data() {
@@ -90,9 +92,14 @@ export default {
   computed: {
     targetsTest: function() {
       const selectedVal = this.selectedValFromParent;
-      return this.targets.filter(function(t) {
-        return t.genre === selectedVal;
-      });
+      const showAll = this.genresFromParent[0];
+      if (selectedVal !== showAll) {
+        return this.targets.filter(function(t) {
+          return t.genre === selectedVal;
+        });
+      } else {
+        return this.targets;
+      }
     },
   },
   methods: {
