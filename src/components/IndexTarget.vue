@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-right: 256px;">
+  <div>
     <v-row>
       <v-col
         v-for="target in targetsTest"
