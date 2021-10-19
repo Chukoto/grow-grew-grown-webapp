@@ -66,6 +66,7 @@ export default {
         {
           title: '進捗度',
           icon: 'mdi-chart-bar',
+          link: { name: 'Progress' },
         },
         {
           title: 'お気に入り',
