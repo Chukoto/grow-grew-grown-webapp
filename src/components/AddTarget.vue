@@ -46,7 +46,7 @@
               <v-row class="mt-1" align="center">
                 <v-col class="d-flex" cols="12" sm="6">
                   <v-select
-                    :items="genresFromParent"
+                    :items="genresWithoutAll"
                     label="ジャンル"
                     v-model="genre"
                     dense
@@ -337,6 +337,7 @@ export default {
 
   data() {
     return {
+      genresWithoutAll: [],
       targets: [],
 
       dialog: false,
@@ -406,6 +407,11 @@ export default {
     if (localStorage.getItem(STORAGE_KEY)) {
       this.targets = JSON.parse(localStorage.getItem(STORAGE_KEY));
     }
+    this.genresWithoutAll = this.genresFromParent.slice(
+      0,
+      this.genresFromParent.length
+    );
+    this.genresWithoutAll.shift();
   },
 
   computed: {
