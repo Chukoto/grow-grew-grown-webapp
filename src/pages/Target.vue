@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      genres: ['学習', '読書', 'トレーニング', 'Todo'],
+      genres: ['すべて', '学習', '読書', 'トレーニング', 'Todo'],
       selected: '',
     };
   },
